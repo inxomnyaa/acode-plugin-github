@@ -60,7 +60,7 @@ export default function githubFs(token, settings) {
    */
   function parseUrl(url) {
     url = url.replace(/^gh:\/\//, '');
-    const [type, user, repo, ...path] = url.split('/');
+    const [type, user, repoWithBranch, ...pathParts] = url.split('/');
 
     // gist doesn't have user
     if (type === 'gist') {
@@ -68,10 +68,14 @@ export default function githubFs(token, settings) {
         /**@type {string} */
         gist: user,
         /**@type {string} */
-        path: repo,
+        path: repoWithBranch,
         type: 'gist',
       }
     }
+
+    // Handle repo with branch
+    const [repo, ...branchParts] = repoWithBranch.split('@');
+    const branch = branchParts.join('@'); // Rejoin in case branch name contains '@'
 
     return {
       /**@type {string} */
@@ -81,7 +85,8 @@ export default function githubFs(token, settings) {
       /**@type {string} */
       repo,
       /**@type {string} */
-      path: path.join('/'),
+      branch: branch || undefined,
+      path: pathParts.join('/'),
     };
   }
 
