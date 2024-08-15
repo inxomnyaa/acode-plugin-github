@@ -121,7 +121,7 @@ export default function githubFs(token, settings) {
     let gh;
     /**@type {Repository} */
     let repo;
-    const [repoName, branch] = repoAtBranch.split('@');
+    const { repo: repoName, branch } = parseUrl(`gh://repo/${user}/${repoAtBranch}`);
     let sha = '';
     const getSha = async () => {
       if (!sha && path) {
